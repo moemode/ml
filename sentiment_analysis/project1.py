@@ -1,4 +1,5 @@
 from string import punctuation, digits
+from typing import Callable
 import numpy as np
 import random
 
@@ -237,7 +238,7 @@ def pegasos(feature_matrix, labels, T, L):
 ##  #pragma: coderesponse end
 
 
-def classify(feature_matrix, theta, theta_0):
+def classify(feature_matrix: np.ndarray, theta: np.ndarray, theta_0: float):
     """
     A classification function that uses given parameters to classify a set of
     data points.
@@ -254,18 +255,21 @@ def classify(feature_matrix, theta, theta_0):
         given theta and theta_0. If a prediction is GREATER THAN zero, it
         should be considered a positive classification.
     """
-    # Your code here
-    raise NotImplementedError
+    epsilon = 10**-9
+    scaled_dist = feature_matrix @ theta + theta_0
+    predictions = np.sign(scaled_dist)
+    predictions[np.abs(scaled_dist) < epsilon] = -1
+    return predictions    
 
 
 def classifier_accuracy(
-    classifier,
-    train_feature_matrix,
-    val_feature_matrix,
-    train_labels,
-    val_labels,
+    classifier: Callable[[np.ndarray, np.ndarray, ...], tuple[np.ndarray, float]],
+    train_feature_matrix: np.ndarray,
+    val_feature_matrix: np.ndarray,
+    train_labels: np.ndarray,
+    val_labels: np.ndarray,
     **kwargs
-):
+) -> tuple[float, float]:
     """
     Trains a linear classifier and computes accuracy.  The classifier is
     trained on the train data.  The classifier's accuracy on the train and
@@ -292,9 +296,12 @@ def classifier_accuracy(
         trained classifier on the training data and the second element is the
         accuracy of the trained classifier on the validation data.
     """
-    # Your code here
-    raise NotImplementedError
-
+    theta, theta_0 = classifier(train_feature_matrix, train_labels, **kwargs)
+    train_predictions = classify(train_feature_matrix, theta, theta_0)
+    val_predictions = classify(val_feature_matrix, theta, theta_0)
+    train_acc = accuracy(train_predictions, train_labels)
+    val_acc = accuracy(val_predictions, val_labels)
+    return train_acc, val_acc 
 
 def extract_words(text):
     """
