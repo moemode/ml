@@ -305,9 +305,6 @@ def extract_words(text):
         a list of lowercased words in the string, where punctuation and digits
         count as their own words.
     """
-    # Your code here
-    raise NotImplementedError
-
     for c in punctuation + digits:
         text = text.replace(c, " " + c + " ")
     return text.lower().split()
@@ -325,9 +322,8 @@ def bag_of_words(texts, remove_stopword=False):
         integer `index`.
     """
     # Your code here
-    raise NotImplementedError
-
     indices_by_word = {}  # maps word to unique index
+    stopword = set()
     for text in texts:
         word_list = extract_words(text)
         for word in word_list:

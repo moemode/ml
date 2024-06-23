@@ -1,7 +1,7 @@
 import csv
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
-
 import project1 as p1
 import sys
 
