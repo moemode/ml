@@ -1,8 +1,8 @@
 from string import punctuation, digits
-from typing import Callable
+from typing import Callable, Optional
 import numpy as np
 import random
-
+import re
 
 # ==============================================================================
 # ===  PART I  =================================================================
@@ -317,7 +317,7 @@ def extract_words(text):
     return text.lower().split()
 
 
-def bag_of_words(texts, remove_stopword=False):
+def bag_of_words(texts, stopwords: Optional[set[str]]=set()):
     """
     NOTE: feel free to change this code as guided by Section 3 (e.g. remove
     stopwords, add bigrams etc.)
@@ -330,16 +330,14 @@ def bag_of_words(texts, remove_stopword=False):
     """
     # Your code here
     indices_by_word = {}  # maps word to unique index
-    stopword = set()
     for text in texts:
         word_list = extract_words(text)
         for word in word_list:
             if word in indices_by_word:
                 continue
-            if word in stopword:
+            if word in stopwords:
                 continue
             indices_by_word[word] = len(indices_by_word)
-
     return indices_by_word
 
 
@@ -371,3 +369,24 @@ def accuracy(preds, targets):
     returns the fraction of predictions that are correct.
     """
     return (preds == targets).mean()
+
+
+def extract_additional_features(reviews, normalize=True):
+    """
+    Args:
+        `reviews` - a list of natural language strings
+    Returns:
+        a matrix of additional features. This matrix has shape (n, 2), where n counts reviews.
+        The first column represents the length of the text and the second column represents
+        the count of all-cap words in each review.
+    """
+    additional_features = np.zeros((len(reviews), 2), dtype=np.float64)
+    for i, text in enumerate(reviews):
+        # Length of the text
+        additional_features[i, 0] = len(text)
+        # Count of all-cap words
+        all_cap_words = re.findall(r'\b[A-Z]{2,}\b', text)
+        additional_features[i, 1] = len(all_cap_words)
+    if normalize:
+        additional_features = (additional_features - np.mean(additional_features, axis=0)) / np.std(additional_features, axis=0)
+    return additional_features
