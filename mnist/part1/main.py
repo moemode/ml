@@ -16,7 +16,7 @@ from kernel import *
 # Load MNIST data:
 train_x, train_y, test_x, test_y = get_MNIST_data()
 # Plot the first 20 images of the training set.
-plot_images(train_x[0:20, :])
+# plot_images(train_x[0:20, :])
 
 #######################################################################
 # 2. Linear Regression with Closed Form Solution
@@ -40,8 +40,9 @@ def run_linear_regression_on_MNIST(lambda_factor=1):
     return test_error
 
 
-# Don't run this until the relevant functions in linear_regression.py have been fully implemented.
-print('Linear Regression test_error =', run_linear_regression_on_MNIST(lambda_factor=1))
+""" lambdas = np.array([0.01, 0.1, 1])
+for lambda_factor in lambdas:
+    print('Linear Regression test_error with lambda =', lambda_factor, ':', run_linear_regression_on_MNIST(lambda_factor)) """
 
 
 #######################################################################
@@ -50,7 +51,7 @@ print('Linear Regression test_error =', run_linear_regression_on_MNIST(lambda_fa
 
 # TODO: first fill out functions in svm.py, or the functions below will not work
 
-def run_svm_one_vs_rest_on_MNIST():
+def run_svm_one_vs_rest_on_MNIST(C=0.1):
     """
     Trains svm, classifies test data, computes test error on test set
 
@@ -60,12 +61,14 @@ def run_svm_one_vs_rest_on_MNIST():
     train_x, train_y, test_x, test_y = get_MNIST_data()
     train_y[train_y != 0] = 1
     test_y[test_y != 0] = 1
-    pred_test_y = one_vs_rest_svm(train_x, train_y, test_x)
+    pred_test_y = one_vs_rest_svm(train_x, train_y, test_x, C)
     test_error = compute_test_error_svm(test_y, pred_test_y)
     return test_error
 
-
-print('SVM one vs. rest test_error:', run_svm_one_vs_rest_on_MNIST())
+""" Cs = [0.01, 0.1, 1]
+for C in Cs:
+    print('SVM one vs. rest test_error with C =', C, ':', run_svm_one_vs_rest_on_MNIST(C)) """
+# print('SVM one vs. rest test_error:', run_svm_one_vs_rest_on_MNIST())
 
 
 def run_multiclass_svm_on_MNIST():
