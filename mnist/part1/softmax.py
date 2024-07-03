@@ -31,8 +31,11 @@ def compute_probabilities(X, theta, temp_parameter):
     Returns:
         H - (k, n) NumPy array, where each entry H[j][i] is the probability that X[i] is labeled as j
     """
-    #YOUR CODE HERE
-    raise NotImplementedError
+    H = theta @ X.T /temp_parameter
+    H -= np.max(H, axis=0)
+    H = np.exp(H)
+    H /= np.sum(H, axis=0)
+    return H
 
 def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
     """
@@ -50,8 +53,12 @@ def compute_cost_function(X, Y, theta, lambda_factor, temp_parameter):
     Returns
         c - the cost value (scalar)
     """
-    #YOUR CODE HERE
-    raise NotImplementedError
+    H = compute_probabilities(X, theta, temp_parameter)
+    k, n = H.shape
+    indicator = sparse.coo_matrix(([1]*n, (Y, range(n))), shape=(k, n)).toarray()
+    pred_loss = -(1/n) * np.sum(np.log(H+1e-15) * indicator)
+    reg_loss = lambda_factor / 2 * np.sum(theta**2)
+    return pred_loss + reg_loss
 
 def run_gradient_descent_iteration(X, Y, theta, alpha, lambda_factor, temp_parameter):
     """
