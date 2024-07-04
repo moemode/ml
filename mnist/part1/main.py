@@ -93,7 +93,7 @@ def run_multiclass_svm_on_MNIST():
 # TODO: first fill out functions in softmax.py, or run_softmax_on_MNIST will not work
 
 
-def run_softmax_on_MNIST(temp_parameter=1):
+def run_softmax_on_MNIST(temp_parameter=1, mod3=False):
     """
     Trains softmax, classifies test data, computes test error, and plots cost function
 
@@ -110,24 +110,24 @@ def run_softmax_on_MNIST(temp_parameter=1):
     """
     train_x, train_y, test_x, test_y = get_MNIST_data()
     theta, cost_function_history = softmax_regression(train_x, train_y, temp_parameter, alpha=0.3, lambda_factor=1.0e-4, k=10, num_iterations=150)
-    plot_cost_function_over_time(cost_function_history)
-    test_error = compute_test_error(test_x, test_y, theta, temp_parameter)
     # Save the model parameters theta obtained from calling softmax_regression to disk.
     write_pickle_data(theta, "./theta.pkl.gz")
+    plot_cost_function_over_time(cost_function_history)
+    test_error = compute_test_error(test_x, test_y, theta, temp_parameter)
+    if mod3:
+        return compute_test_error_mod3(test_x, test_y, theta, temp_parameter)
+    else:
+        return test_error
 
-    # TODO: add your code here for the "Using the Current Model" question in tab 6.
-    #      and print the test_error_mod3
-    return test_error
-
+"""
 temps = [0.5, 1.0, 2.0]
 for temp in temps:
     print('softmax test_error with temp_parameter =', temp, ':', run_softmax_on_MNIST(temp))
-
+"""
 #######################################################################
 # 6. Changing Labels
 #######################################################################
-
-
+print(f"Error rate for labels mod 3: {run_softmax_on_MNIST(mod3=True)}")
 
 def run_softmax_on_MNIST_mod3(temp_parameter=1):
     """
@@ -135,11 +135,18 @@ def run_softmax_on_MNIST_mod3(temp_parameter=1):
 
     See run_softmax_on_MNIST for more info.
     """
-    # YOUR CODE HERE
-    raise NotImplementedError
+    train_x, train_y, test_x, test_y = get_MNIST_data()
+    train_y, test_y = update_y(train_y, test_y)
+    theta, cost_function_history = softmax_regression(train_x, train_y, temp_parameter, alpha=0.3, lambda_factor=1.0e-4, k=10, num_iterations=150)
+    # Save the model parameters theta obtained from calling softmax_regression to disk.
+    write_pickle_data(theta, "./theta.pkl.gz")
+    plot_cost_function_over_time(cost_function_history)
+    test_error = compute_test_error(test_x, test_y, theta, temp_parameter)
+    return test_error
 
 
 # TODO: Run run_softmax_on_MNIST_mod3(), report the error rate
+print(f"Error rate for labels mod 3 when trained on modified labels: {run_softmax_on_MNIST_mod3()}")
 
 
 #######################################################################
