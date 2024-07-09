@@ -236,13 +236,8 @@ def check_project_onto_PC():
     ]);
     x_centered, feature_means = features.center_data(X)
     pcs = features.principal_components(x_centered)
-    exp_res = np.array([
-        [-5.61248608, 0],
-        [-1.87082869, 0],
-        [1.87082869, 0],
-        [5.61248608, 0],
-    ])
     n_components = 2
+    exp_res = x_centered @ pcs[:, :n_components]
     if check_array(
             ex_name, features.project_onto_PC,
             exp_res, X, pcs, n_components, feature_means):
